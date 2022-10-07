@@ -1,0 +1,171 @@
+#pragma version 6
+txn ApplicationID
+int 0
+==
+bnz main_l12
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l11
+txna ApplicationArgs 0
+byte "buy"
+==
+bnz main_l8
+txna ApplicationArgs 0
+byte "relist"
+==
+bnz main_l7
+txna ApplicationArgs 0
+byte "unlist"
+==
+bnz main_l6
+err
+main_l6:
+byte "LISTED"
+app_global_get
+int 1
+==
+byte "OWNER"
+app_global_get
+txn Sender
+==
+&&
+assert
+byte "LISTED"
+int 0
+app_global_put
+byte "PRICE"
+int 0
+app_global_put
+int 1
+return
+main_l7:
+byte "LISTED"
+app_global_get
+int 0
+==
+byte "OWNER"
+app_global_get
+txn Sender
+==
+&&
+txn NumAppArgs
+int 3
+==
+&&
+txna ApplicationArgs 2
+btoi
+int 0
+>
+&&
+assert
+byte "LISTED"
+int 1
+app_global_put
+byte "LOCATION"
+txna ApplicationArgs 1
+app_global_put
+byte "PRICE"
+txna ApplicationArgs 2
+btoi
+app_global_put
+int 1
+return
+main_l8:
+byte "LISTED"
+app_global_get
+int 1
+==
+global GroupSize
+int 2
+==
+&&
+txn GroupIndex
+int 0
+==
+&&
+txna Accounts 1
+byte "OWNER"
+app_global_get
+==
+&&
+gtxn 1 TypeEnum
+int pay
+==
+gtxn 1 Receiver
+txna Accounts 1
+==
+&&
+gtxn 1 Amount
+byte "PRICE"
+app_global_get
+==
+&&
+gtxn 1 Sender
+gtxn 0 Sender
+==
+&&
+&&
+bnz main_l10
+int 0
+return
+main_l10:
+byte "OWNER"
+txna Accounts 0
+app_global_put
+byte "PREVPRICE"
+byte "PRICE"
+app_global_get
+app_global_put
+byte "PRICE"
+int 0
+app_global_put
+byte "LISTED"
+int 0
+app_global_put
+int 1
+return
+main_l11:
+txn Sender
+byte "OWNER"
+app_global_get
+==
+return
+main_l12:
+txn NumAppArgs
+int 5
+==
+txn Note
+byte "justArt-market:uv01"
+==
+&&
+txna ApplicationArgs 4
+btoi
+int 0
+>
+&&
+assert
+byte "NAME"
+txna ApplicationArgs 0
+app_global_put
+byte "DESCRIPTION"
+txna ApplicationArgs 1
+app_global_put
+byte "IMAGE"
+txna ApplicationArgs 2
+app_global_put
+byte "LOCATION"
+txna ApplicationArgs 3
+app_global_put
+byte "PRICE"
+txna ApplicationArgs 4
+btoi
+app_global_put
+byte "OWNER"
+txna Accounts 0
+app_global_put
+byte "LISTED"
+int 1
+app_global_put
+int 1
+return
