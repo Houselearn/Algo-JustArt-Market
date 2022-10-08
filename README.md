@@ -1,4 +1,4 @@
-# Near JustArt Market DApp
+# Algorand JustArt Market DApp
 An Art market where people can buy and sell art items.
 
 [Demo Link](https://just-art-market.vercel.app/)
