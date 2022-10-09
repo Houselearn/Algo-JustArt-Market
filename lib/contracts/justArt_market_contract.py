@@ -17,14 +17,20 @@ class Item:
         relist = Bytes("relist")
         unlist = Bytes("unlist")
 
+    # allow users to create a new item application
     def create_item(self):
         return Seq(
-            [
+            [   # checks if application_args have the required values to initialize the application
+                # checks if the input data contain only valid/non-empty values
                 Assert(
                     And(
                         Txn.application_args.length() == Int(5),
                         Txn.note() == Bytes("justArt-market:uv01"),
-                        Btoi(Txn.application_args[4]) > Int(0)
+                        Btoi(Txn.application_args[4]) > Int(0),
+                        Len(Txn.application_args[0]) > Int(0),
+                        Len(Txn.application_args[1]) > Int(0),
+                        Len(Txn.application_args[2]) > Int(0),
+                        Len(Txn.application_args[3]) > Int(0),
                     )
                 ),
                 App.globalPut(self.Variables.name, Txn.application_args[0]),
@@ -40,7 +46,8 @@ class Item:
                 Approve()
             ]
         )
-
+    # allow users to buy an item that is on sale
+    # checks if the prerequisite conditions to buy am item are met
     def buy(self):
         valid_number_of_transactions = Global.group_size() == Int(2)
         valid_grouping = Txn.group_index() == Int(0)
@@ -53,7 +60,7 @@ class Item:
         previous_owner = Txn.accounts[1]
         valid_params = previous_owner == App.globalGet(
             self.Variables.current_owner)
-
+        is_not_owner = new_owner != App.globalGet(self.Variables.current_owner) 
         # check payment parameters
         valid_payment_to_seller = And(
             Gtxn[1].type_enum() == TxnType.Payment,
@@ -63,6 +70,7 @@ class Item:
         )
 
         can_buy = And(
+            is_not_owner,
             item_listed,
             valid_number_of_transactions,
             valid_grouping,
@@ -80,16 +88,21 @@ class Item:
 
         return If(can_buy).Then(update_state).Else(Reject())
 
+    # allow items' owners to relist their items that were not on sale
     def relist(self):
         return Seq(
             [
+                # checks if item is not listed
+                # checks if sender is the item's current owner
+                # checks if the input data in application_args are valid values
                 Assert(
                     And(
                         App.globalGet(self.Variables.is_item_listed) == Int(0),
                         App.globalGet(
                             self.Variables.current_owner) == Txn.sender(),
                         Txn.application_args.length() == Int(3),
-                        Btoi(Txn.application_args[2]) > Int(0)
+                        Btoi(Txn.application_args[2]) > Int(0),
+                        Len(Txn.application_args[1]) > Int(0),
 
                     )
                 ),
@@ -102,10 +115,12 @@ class Item:
                 Approve()
             ]
         )
-
+    # allow items' owners to unlist their items from the marketplace
     def unlist(self):
         return Seq(
             [
+                # checks if item is listed
+                # checks if sender is the item's current owner
                 Assert(
                     And(
                         App.globalGet(self.Variables.is_item_listed) == Int(1),
