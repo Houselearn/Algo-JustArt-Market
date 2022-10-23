@@ -33,7 +33,7 @@ const compileProgram = async (programSource: any) => {
 
 // CREATE ITEM: ApplicationCreateTxn
 export const addNewItem = async (senderAddress: string, item: Item) => {
-    console.log("Adding Item...");
+    
     let { algodClient, myAlgoConnect } = await initialise()
     let params = await algodClient.getTransactionParams().do();
     // Compile programs
@@ -70,32 +70,26 @@ export const addNewItem = async (senderAddress: string, item: Item) => {
 
     // Sign & submit the transaction
     let signedTxn = await myAlgoConnect.signTransaction(txn.toByte());
-    console.log("Signed transaction with txID: %s", txId);
+    
     await algodClient.sendRawTransaction(signedTxn.blob).do();
 
     // Wait for transaction to be confirmed
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, txId, 4);
 
     // Get the completed Transaction
-    console.log(
-        "Transaction " +
-        txId +
-        " confirmed in round " +
-        confirmedTxn["confirmed-round"]
-    );
-
+    
     // Get created application id and notify about completion
     let transactionResponse = await algodClient
         .pendingTransactionInformation(txId)
         .do();
     let appId = transactionResponse["application-index"];
-    console.log("Created new app-id: ", appId);
+    
     return appId;
 };
 
 // BUY ITEM: Group transaction consisting of ApplicationCallTxn and PaymentTxn
 export const buyItem = async (senderAddress: string, item: Item) => {
-    console.log("Buying Item...");
+    
     let { algodClient, myAlgoConnect } = await initialise()
     let params = await algodClient.getTransactionParams().do();
 
@@ -132,7 +126,7 @@ export const buyItem = async (senderAddress: string, item: Item) => {
     let signedTxn = await myAlgoConnect.signTransaction(
         txnArray.map((txn) => txn.toByte())
     );
-    console.log("Signed group transaction");
+    
     let tx = await algodClient
         .sendRawTransaction(signedTxn.map((txn) => txn.blob))
         .do();
@@ -141,18 +135,13 @@ export const buyItem = async (senderAddress: string, item: Item) => {
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, tx.txId, 4);
 
     // Notify about completion
-    console.log(
-        "Group transaction " +
-        tx.txId +
-        " confirmed in round " +
-        confirmedTxn["confirmed-round"]
-    );
+    
 };
 
 
 // RELISTING ITEM:  ApplicationCallTxn
 export const relistItem = async (senderAddress: string, item: Item, newLocation: string, newPrice: number) => {
-    console.log("Relisting Item...");
+    
     let { algodClient, myAlgoConnect } = await initialise()
     let params = await algodClient.getTransactionParams().do();
 
@@ -176,24 +165,19 @@ export const relistItem = async (senderAddress: string, item: Item, newLocation:
 
     // Sign & submit the transaction
     let signedTxn = await myAlgoConnect.signTransaction(appCallTxn.toByte());
-    console.log("Signed transaction with txID: %s", txId);
+    
     await algodClient.sendRawTransaction(signedTxn.blob).do();
 
     // Wait for group transaction to be confirmed
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, txId, 4);
 
     // Notify about completion
-    console.log(
-        "Group transaction " +
-        txId +
-        " confirmed in round " +
-        confirmedTxn["confirmed-round"]
-    );
+    
 };
 
 // UNLISTING ITEM:  ApplicationCallTxn
 export const unlistItem = async (senderAddress: string, item: Item) => {
-    console.log("Unlisting Item...");
+    
     let { algodClient, myAlgoConnect } = await initialise()
 
     let params = await algodClient.getTransactionParams().do();
@@ -216,26 +200,21 @@ export const unlistItem = async (senderAddress: string, item: Item) => {
 
     // Sign & submit the transaction
     let signedTxn = await myAlgoConnect.signTransaction(appCallTxn.toByte());
-    console.log("Signed transaction with txID: %s", txId);
+    
     await algodClient.sendRawTransaction(signedTxn.blob).do();
 
     // Wait for group transaction to be confirmed
     let confirmedTxn = await algosdk.waitForConfirmation(algodClient, txId, 4);
 
     // Notify about completion
-    console.log(
-        "Group transaction " +
-        txId +
-        " confirmed in round " +
-        confirmedTxn["confirmed-round"]
-    );
+    
 };
 
 
 
 // GET PRODUCTS: Use indexer
 export const getItems = async () => {
-    console.log("Fetching Items...");
+    
     let { indexerClient } = await initialise()
     let note = new TextEncoder().encode(marketplaceNote);
     let encodedNote = Buffer.from(note).toString("base64");
@@ -259,7 +238,7 @@ export const getItems = async () => {
             }
         }
     }
-    console.log("Items fetched.");
+    
     return Items;
 };
 
