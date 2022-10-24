@@ -42,7 +42,7 @@ function Details({ id }: { id: number }) {
     if (id !== null && !valueIsNaN(id)) {
       try {
         setPageLoad(true);
-        setItem(await getItem(id));
+        setItem(await getItem(id, true));
       } catch (error) {
         console.log({ error });
       } finally {

@@ -2,9 +2,9 @@ export interface Item {
   appId?: number;
   appAddress?: string;
   name: string;
-  description: string;
+  description?: string;
   image: string;
-  location: string;
+  location?: string;
   currPrice: number;
   prevPrice?: number;
   currOwner?: string;

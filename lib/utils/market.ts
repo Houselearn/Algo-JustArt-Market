@@ -253,7 +253,7 @@ export const getItems = async () => {
         let appId = transaction["created-application-index"];
         if (appId) {
             // Step 2: Get each application by application id
-            let item = await getItem(appId);
+            let item = await getItem(appId, false);
             if (item) {
                 Items.push(item);
             }
@@ -276,7 +276,7 @@ export const getUserItems = async (senderAddress: string) => {
     return userItems;
 }
 
-export const getItem = async (appId: number) => {
+export const getItem = async (appId: number, getHistory: boolean) => {
     try {
         let { indexerClient } = await initialise()
         // 1. Get application by appId
@@ -299,15 +299,11 @@ export const getItem = async (appId: number) => {
         let prevPrice = 0;
         let currOwner = "";
         let isItemListed = 0;
+        let history = [];
 
         if (getField("NAME", globalState) !== undefined) {
             let field = getField("NAME", globalState).value.bytes;
             name = base64ToUTF8String(field);
-        }
-
-        if (getField("DESCRIPTION", globalState) !== undefined) {
-            let field = getField("DESCRIPTION", globalState).value.bytes;
-            description = base64ToUTF8String(field);
         }
 
         if (getField("IMAGE", globalState) !== undefined) {
@@ -315,14 +311,18 @@ export const getItem = async (appId: number) => {
             image = base64ToUTF8String(field);
         }
 
+        if (getField("PRICE", globalState) !== undefined) {
+            currPrice = getField("PRICE", globalState).value.uint;
+        }
+
+        if (getField("DESCRIPTION", globalState) !== undefined) {
+            let field = getField("DESCRIPTION", globalState).value.bytes;
+            description = base64ToUTF8String(field);
+        }
+
         if (getField("LOCATION", globalState) !== undefined) {
             let field = getField("LOCATION", globalState).value.bytes;
             location = base64ToUTF8String(field);
-        }
-
-
-        if (getField("PRICE", globalState) !== undefined) {
-            currPrice = getField("PRICE", globalState).value.uint;
         }
 
         if (getField("PREVPRICE", globalState) !== undefined) {
@@ -338,7 +338,9 @@ export const getItem = async (appId: number) => {
             isItemListed = getField("LISTED", globalState).value.uint;
         }
 
-        let history = await getTransactionHistory(appId);
+        if (getHistory) {
+            history = await getTransactionHistory(appId);
+        }
 
         return {
             appId,
