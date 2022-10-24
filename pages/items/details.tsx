@@ -88,8 +88,10 @@ function Details({ id }: { id: number }) {
         getItemData();
         getBalance(address);
       }
-    } catch (e) { }
-    setLoading(false);
+    } catch (e) {
+      setLoading(false)
+    }
+    ;
   }
 
   useEffect(() => {
