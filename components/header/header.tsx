@@ -14,7 +14,9 @@ export function Header() {
     try {
       const data = await connectWallet()
       setAccount(data)
-      getBalance(data.address)
+      if (data.address) {
+        getBalance(data.address)
+      }
     } catch (e) {
       console.log(e)
     }
