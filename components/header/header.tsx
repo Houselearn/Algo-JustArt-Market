@@ -13,8 +13,10 @@ export function Header() {
   async function login() {
     try {
       const data = await connectWallet()
-      setAccount(data)
-      getBalance(data.address)
+      if (data) {
+        setAccount(data)
+        getBalance(data.address)
+      }
     } catch (e) {
       console.log(e)
     }
