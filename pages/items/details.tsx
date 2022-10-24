@@ -89,9 +89,10 @@ function Details({ id }: { id: number }) {
         getBalance(address);
       }
     } catch (e) {
-      setLoading(false)
+      console.log(e)
     }
-    ;
+    setLoading(false)
+      ;
   }
 
   useEffect(() => {
