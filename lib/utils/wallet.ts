@@ -5,9 +5,10 @@ export async function connectWallet() {
         let { myAlgoConnect } = await initialise()
         const accounts = await myAlgoConnect.connect()
         const account = accounts[0];
-        return { address: account.address || "", name: account.name || "", }
+        return { address: account.address, name: account.name, }
     } catch (error) {
         console.log(error)
+        return { address: "", name: "" }
     }
 }
 
