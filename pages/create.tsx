@@ -30,10 +30,12 @@ function Create() {
       toast.success('Listing created')
     } catch (e) {
       console.log({ e });
-      toast.error("Failed to create a product.");
+      toast.error("Failed to create a Item.");
     } finally {
       await update()
       setLoading(false)
+    }
+    if (id !== "/") {
       router.push(`/items/${id}`);
     }
   }

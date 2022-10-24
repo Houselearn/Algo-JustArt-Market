@@ -23,7 +23,7 @@ class Item:
                 Assert(
                     And(
                         Txn.application_args.length() == Int(5),
-                        Txn.note() == Bytes("justArt-market:uv01"),
+                        Txn.note() == Bytes("justArt-market:uv0001"),
                         Btoi(Txn.application_args[4]) > Int(0)
                     )
                 ),

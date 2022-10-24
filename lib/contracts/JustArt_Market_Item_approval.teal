@@ -136,7 +136,7 @@ txn NumAppArgs
 int 5
 ==
 txn Note
-byte "justArt-market:uv01"
+byte "justArt-market:uv0001"
 ==
 &&
 txna ApplicationArgs 4
