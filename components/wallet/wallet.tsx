@@ -16,7 +16,8 @@ export function Wallet({ address, name, amount, symbol, destroy }: { address: st
           >
             {amount ? (
               <>
-                {microAlgosToString(amount)} <span className="ms-1"> {symbol}</span>
+                {amount > 0 ? microAlgosToString(amount) : 0.00}
+                <span className="ms-1"> {symbol}</span>
               </>
             ) : (
               <Spinner animation="border" size="sm" className="opacity-25" />

@@ -16,9 +16,10 @@ export async function fetchBalance(accountAddress: string) {
         let { indexerClient } = await initialise()
         const response = await indexerClient.lookupAccountByID(accountAddress).do()
         const balance: number = response.account.amount;
-        return { balance: balance || 0 };
+        return { balance: balance };
     } catch (error) {
         console.log(error)
+        return { balance: -1 }
     }
 };
 

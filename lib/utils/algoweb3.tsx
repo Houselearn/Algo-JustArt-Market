@@ -96,9 +96,9 @@ export const AlgoProvider: React.FC<ProviderProps> = ({ children }) => {
     useEffect(() => {
         //checking if there already is a state in localstorage
         //if yes, update the current state with the stored one  
-        if (JSON.parse(localStorage.getItem("account"))) {
+        if (JSON.parse(sessionStorage.getItem("account"))) {
 
-            let data: SetAccountInputs = JSON.parse(localStorage.getItem("account"))
+            let data: SetAccountInputs = JSON.parse(sessionStorage.getItem("account"))
 
             setAccount(data)
         }
@@ -109,7 +109,7 @@ export const AlgoProvider: React.FC<ProviderProps> = ({ children }) => {
         if (state !== INITIAL_STATE) {
             // create and / or set a new localstorage
             let account = { address: state.address, name: state.name }
-            localStorage.setItem("account", JSON.stringify(account));
+            sessionStorage.setItem("account", JSON.stringify(account));
 
         }
     }, [state])
